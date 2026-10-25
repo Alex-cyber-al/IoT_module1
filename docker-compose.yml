@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.15
+    container_name: mosquitto_broker
+    # Форсуємо права адміністратора, щоб обійти блокування Windows та WSL
+    user: "0:0"
+    ports:
+      - "1883:1883"
+      - "8883:8883" # Обов'язковий захищений порт за методичкою
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+    # Автоматично генерує базу паролів усередині контейнера при старті у викладача
+    command: >
+      sh -c "mosquitto_passwd -b -c /mosquitto/config/passwords sensor_user SensPass567 &&
+             mosquitto_passwd -b /mosquitto/config/passwords openhab_user OhPass1234 &&
+             exec mosquitto -c /mosquitto/config/mosquitto.conf"
+
+  openhab:
+    image: openhab/openhab:4.1.0
+    container_name: openhab_smart
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./openhab/conf:/openhab/conf
