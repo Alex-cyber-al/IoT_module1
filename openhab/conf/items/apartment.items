@@ -1,0 +1,10 @@
+Number Apartment_Power   "Поточне споживання Вт [%.1f W]" <energy>      { channel="mqtt:topic:mybroker:corridor_devices:power" }
+Number Corridor_Temp     "Температура коридор [%.1f °C]"  <temperature> { channel="mqtt:topic:mybroker:corridor_devices:temp" }
+Number Corridor_Humid    "Вологість коридор [%.1f %%]"    <humidity>    { channel="mqtt:topic:mybroker:corridor_devices:humid" }
+String Room1_Motion      "Рух Кімната 1 [%s]"             <motion>      { channel="mqtt:topic:mybroker:room1_devices:motion1" }
+String Room2_Motion      "Рух Кімната 2 [%s]"             <motion>      { channel="mqtt:topic:mybroker:room2_devices:motion2" }
+Dimmer Room1_Light       "Світло Кімната 1 [%d %%]"        <light>
+Dimmer Room2_Light       "Світло Кімната 2 [%d %%]"        <light>
+Switch Corridor_Heater   "Обігрівач Коридор"               <heating>
+Number Heater_Setpoint   "Уставка обігрівача [%.1f °C]"    <temperature>
+

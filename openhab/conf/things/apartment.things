@@ -1,0 +1,23 @@
+// Підключення до MQTT брокера в Docker
+Bridge mqtt:broker:mybroker [ host="mosquitto", port=1883, secure=false ] {
+
+    # Клімат та лічильник у коридорі
+    Thing topic corridor_devices "Пристрої Коридору" {
+        Channels:
+            Type number : power  [ stateTopic="flat/corridor/meter/telemetry", transformationPattern="JSONPATH:$.power" ]
+            Type number : temp   [ stateTopic="flat/corridor/climate/telemetry", transformationPattern="JSONPATH:$.temperature" ]
+            Type number : humid  [ stateTopic="flat/corridor/climate/telemetry", transformationPattern="JSONPATH:$.humidity" ]
+    }
+
+    # Датчик руху Кімнати 1
+    Thing topic room1_devices "Пристрої Кімната 1" {
+        Channels:
+            Type string : motion1 [ stateTopic="flat/room1/motion/telemetry", transformationPattern="JSONPATH:$.value" ]
+    }
+
+    # Датчик руху Кімнати 2
+    Thing topic room2_devices "Пристрої Кімната 2" {
+        Channels:
+            Type string : motion2 [ stateTopic="flat/room2/motion/telemetry", transformationPattern="JSONPATH:$.value" ]
+    }
+}

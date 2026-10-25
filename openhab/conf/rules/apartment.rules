@@ -1,0 +1,52 @@
+// ПРАВИЛО 1: Енергозбереження освітлення (Рух + Темрява < 50 лк)
+rule "Правило 1: Керування світлом"
+when
+    Item Room1_Motion changed
+then
+    if (Room1_Motion.state.toString == "ON") {
+        Room1_Light.sendCommand(70)
+        logInfo("Automation", "💡 Рух + Темрява. Світло увімкнено на 70%")
+    }
+    if (Room1_Motion.state.toString == "OFF") {
+        // Прискорено для тесту до 30 секунд замість 5 хвилин
+        createTimer(now.plusSeconds(30), [ |
+            Room1_Light.sendCommand(0)
+            logInfo("Automation", "💤 5 хв без руху. Світло вимкнено.")
+        ])
+    }
+end
+
+// ПРАВИЛО 2: Режим Економ для опалення
+rule "Правило 2: Клімат Економ"
+when
+    Item Room1_Motion changed or Item Room2_Motion changed
+then
+    if (Room1_Motion.state.toString == "ON" || Room2_Motion.state.toString == "ON") {
+        Heater_Setpoint.sendCommand(21.0)
+        logInfo("Climate", "🏠 Поява руху: Уставка опалення 21°C")
+    }
+    if (Room1_Motion.state.toString == "OFF" && Room2_Motion.state.toString == "OFF") {
+        // Прискорено для тесту до 30 секунд замість 30 хвилин
+        createTimer(now.plusSeconds(30), [ |
+            Heater_Setpoint.sendCommand(17.0)
+            logInfo("Climate", "📭 Нікого немає: Режим Економ 17°C")
+        ])
+    }
+end
+
+// ПРАВИЛО 3: Захист від перевантаження мережі
+rule "Правило 3: Захист лічильника"
+when
+    Item Apartment_Power changed
+then
+    var float currentPower = (Apartment_Power.state as Number).floatValue
+    if (currentPower > 2500.0) {
+        logWarn("Security", "🚨 УВАГА! Потужність " + currentPower + " Вт > 2500 Вт!")
+        // Прискорено для тесту до 5 секунд замість 1 хвилини
+        createTimer(now.plusSeconds(5), [ |
+            Corridor_Heater.sendCommand(OFF)
+            logError("Security", "Сповіщення в UI: ОБІГРІВАЧ АВАРІЙНО ВИМКНЕНО!")
+        ])
+    }
+end
+

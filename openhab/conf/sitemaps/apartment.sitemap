@@ -1,0 +1,18 @@
+sitemap apartment label "Розумна Квартира (Варіант 1)" {
+    Frame label="Енергомоніторинг (Головний лічильник)" {
+        Text item=Apartment_Power label="Поточне споживання [%.1f W]" icon="energy"
+        
+        // Графік споживання енергії за останню годину (вимога Варіанта 1)
+        Chart item=Apartment_Power period=h refresh=5000 legend=true
+    }
+
+    Frame label="Кліматконтроль" {
+        Text item=Apartment_Temp icon="temperature"
+        Text item=Apartment_Humid icon="humidity"
+    }
+
+    Frame label="Безпека та Рух" {
+        Text item=Room1_Motion label="Кімната 1 [MAP(motion.map):%s]" icon="motion"
+        Text item=Room2_Motion label="Кімната 2 [MAP(motion.map):%s]" icon="motion"
+    }
+}
